@@ -25,39 +25,41 @@ O sistema será organizado em módulos separados de acordo com suas responsabili
 
 Essa separação busca facilitar manutenção, reutilização e entendimento do código.
 
-Exemplo visual:
+### Exemplo visual
 
+```txt
 codigo/
 │
 ├── main.py
 │
 ├── modelos/
-│ ├── professor.py
-│ ├── disciplina.py
-│ ├── horario.py
-│ └── grade_horaria.py
+│   ├── professor.py
+│   ├── disciplina.py
+│   ├── horario.py
+│   └── grade_horaria.py
 │
 ├── servicos/
-│ ├── gerador_grade.py
-│ ├── validador_conflitos.py
-│ └── organizador_horarios.py
+│   ├── gerador_grade.py
+│   ├── validador_conflitos.py
+│   └── organizador_horarios.py
 │
 ├── fabricas/
-│ ├── fabrica_professor.py
-│ ├── fabrica_disciplina.py
-│ └── fabrica_horario.py
+│   ├── fabrica_professor.py
+│   ├── fabrica_disciplina.py
+│   └── fabrica_horario.py
 │
 ├── repositorios/
-│ ├── repositorio_professores.py
-│ ├── repositorio_disciplinas.py
-│ └── repositorio_horarios.py
+│   ├── repositorio_professores.py
+│   ├── repositorio_disciplinas.py
+│   └── repositorio_horarios.py
 │
 ├── utils/
-│ └── formatadores.py
+│   └── formatadores.py
 │
 └── testes/
-├── teste_conflitos.py
-└── teste_gerador.py
+    ├── teste_conflitos.py
+    └── teste_gerador.py
+```
 
 ---
 
@@ -73,21 +75,19 @@ Para auxiliar na organização e qualidade do projeto, a equipe definiu as segui
 
 ### Diagrama visual
 
+```txt
 Usuário
-↓
+   ↓
 
 main.py
-↓
+   ↓
 
 servicos/
-
-↓
-
 ├── gerador_grade.py
 ├── validador_conflitos.py
 └── organizador_horarios.py
 
-↓
+   ↓
 
 modelos/
 ├── professor.py
@@ -95,12 +95,13 @@ modelos/
 ├── horario.py
 └── grade_horaria.py
 
-↓
+   ↓
 
 repositorios/
 ├── repositorio_professores.py
 ├── repositorio_disciplinas.py
 └── repositorio_horarios.py
+```
 
 ### Explicação de responsabilidades
 
