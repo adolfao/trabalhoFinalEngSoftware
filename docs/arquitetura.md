@@ -220,7 +220,7 @@ A criação das entidades de grade envolve validações de consistência estrita
 
 ### 2. Padrão Comportamental: Strategy
 
-Justificativa e Aplicabilidade
+### Justificativa e Aplicabilidade
 O maior desafio do sistema é a identificação de conflitos (HU05). Em vez de criar uma sequência massiva de blocos if/else difíceis de testar, isolamos cada regra de validação académica numa classe Strategy independente dentro de servicos/validador_conflitos.py.
 
 O contexto ValidadorConflitos apenas varre uma lista de estratégias ativas. Se amanhã a coordenação exigir uma nova regra (ex: "limite de 4 horas de aula seguidas para o mesmo período"), basta criar uma nova classe que implemente a interface, sem tocar no código que já funciona.
