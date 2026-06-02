@@ -157,3 +157,101 @@ Algumas funcionalidades ficaram planejadas para versões futuras.
 
 Justificativa:
 A equipe priorizou as funcionalidades relacionadas à organização e validação da grade horária para manter o projeto mais viável e consistente.
+
+
+## Padrões de Projeto Aplicados
+
+Para garantir a manutenibilidade, extensibilidade e a separação de responsabilidades do sistema, foram aplicados intencionalmente dois padrões de projeto consagrados pelo GoF (Gang of Four): **Factory Method** (Criacional) e **Strategy** (Comportamental).
+
+----
+
+### 1. Padrão Criacional: Factory Method
+
+#### Justificativa e Aplicabilidade
+A criação das entidades de grade envolve validações de consistência estrita antes do objeto ser aceito na memória. Centralizamos essa lógica em fábricas na pasta fabricas/. Se o terminal receber uma carga horária inválida (diferente de 30, 60 ou 90) ou um período negativo, a fábrica barra a criação imediatamente.
+
+#### Diagrama de Classes
+```txt
++-----------------------------------------------------------------------------------------+
+|                                    FabricaProfessor                                     |
++-----------------------------------------------------------------------------------------+
+| + criar_professor(id_prof: int, nome: str, disponibilidade: dict) -> Professor          |
++-----------------------------------------------------------------------------------------+
+                                             |
+                                             v (Instancia)
++-----------------------------------------------------------------------------------------+
+|                                        Professor                                        |
++-----------------------------------------------------------------------------------------+
+| + id_prof: int                                                                          |
+| + nome: str                                                                             |
+| + disponibilidade: dict  # Ex: {'segunda': ['07:30', '09:10']}                           |
++-----------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------+
+|                                    FabricaDisciplina                                    |
++-----------------------------------------------------------------------------------------+
+| + criar_disciplina(codigo: str, nome: str, periodo: int, carga_horaria: int) -> Disciplina|
++-----------------------------------------------------------------------------------------+
+                                             |
+                                             v (Instancia)
++-----------------------------------------------------------------------------------------+
+|                                       Disciplina                                        |
++-----------------------------------------------------------------------------------------+
+| + codigo: str                                                                           |
+| + nome: str                                                                             |
+| + periodo: int                                                                          |
+| + carga_horaria: int                                                                    |
++-----------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------+
+|                                     FabricaHorario                                      |
++-----------------------------------------------------------------------------------------+
+| + criar_horario(dia_semana: str, hora_inicio: str) -> Horario                           |
++-----------------------------------------------------------------------------------------+
+                                             |
+                                             v (Instancia)
++-----------------------------------------------------------------------------------------+
+|                                         Horario                                         |
++-----------------------------------------------------------------------------------------+
+| + dia_semana: str                                                                       |
+| + hora_inicio: str                                                                      |
++-----------------------------------------------------------------------------------------+
+
+### 2. Padrão Comportamental: Strategy
+
+Justificativa e Aplicabilidade
+O maior desafio do sistema é a identificação de conflitos (HU05). Em vez de criar uma sequência massiva de blocos if/else difíceis de testar, isolamos cada regra de validação académica numa classe Strategy independente dentro de servicos/validador_conflitos.py.
+
+O contexto ValidadorConflitos apenas varre uma lista de estratégias ativas. Se amanhã a coordenação exigir uma nova regra (ex: "limite de 4 horas de aula seguidas para o mesmo período"), basta criar uma nova classe que implemente a interface, sem tocar no código que já funciona.
+
+```txt
++------------------------------------------------------------------+
+ |                       ValidadorConflitos                         |
+ |                           (Contexto)                             |
+ +------------------------------------------------------------------+
+ | - _estrategias: List[EstrategiaValidacao]                        |
+ +------------------------------------------------------------------+
+ | + executar_validacoes(grade: GradeHoraria) -> List[str]          |
+ +------------------------------------------------------------------+
+                                  |
+                                  | o-- [Agrega e executa 1..n]
+                                  v
+ +------------------------------------------------------------------+
+ |                    <<interface / ABC>>                           |
+ |                    EstrategiaValidacao                           |
+ +------------------------------------------------------------------+
+ | + validar(grade: GradeHoraria) -> List[str]                      |
+ +------------------------------------------------------------------+
+                                  ▲
+                                  | (Implementação das Regras)
+         +------------------------+------------------------+
+         |                                                 |
+ +----------------------------------+     +----------------------------------+
+ |       ValidaChoqueDocente        |     |       ValidaChoquePeriodo        |
+ +----------------------------------+     +----------------------------------+
+ | # Verifica se o mesmo professor  |     | # Impede que duas disciplinas do |
+ | # está em duas salas no mesmo    |     | # mesmo período/turma tenham     |
+ | # dia e horário.                 |     | # aulas sobrepostas.             |
+ +----------------------------------+     +----------------------------------+
+ | + validar(grade) -> List[str]    |     | + validar(grade) -> List[str]    |
+ +----------------------------------+     +----------------------------------+
