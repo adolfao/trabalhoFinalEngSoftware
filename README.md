@@ -6,7 +6,7 @@
 
 - Adolfo
 - Isabelle Rosvadoski Nofre
-- ...
+- Daniel Carvalho
 
 ---
 
@@ -29,8 +29,6 @@ O sistema busca reduzir o tempo gasto na montagem manual das grades e diminuir c
 ## Fontes utilizadas
 
 - Relatos e experiências compartilhadas por professores universitários sobre dificuldades na montagem manual de grades horárias.
-- Sistema Integrado de Gestão de Atividades Acadêmicas (SIGAA): https://sigaa.ufrn.br
-- Sistema Unificado de Administração Pública (SUAP): https://suap.ifrn.edu.br
 - Um modelo de programação matemática para o problema de atribuição dos horários de aulas dos professores de um curso:
   https://repositorio.utfpr.edu.br/jspui/handle/1/37395
 
@@ -38,10 +36,13 @@ O sistema busca reduzir o tempo gasto na montagem manual das grades e diminuir c
 
 ## Divisão de Responsabilidades
 
+## Divisão de Responsabilidades
+
 | Membro                    | Responsabilidades iniciais                                                                                                                 |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | Isabelle Rosvadoski Nofre | Documentação do projeto, estruturação da proposta, criação das histórias de usuário e definição dos critérios de aceitação.                |
 | Adolfo                    | Elicitação de requisitos, análise de sistemas similares, validação das histórias de usuário e apoio no desenvolvimento inicial do sistema. |
+| Daniel                    | Organização da estrutura do sistema, apoio na modelagem das funcionalidades e auxílio na validação dos requisitos definidos pela equipe.   |
 
 ---
 
