@@ -216,6 +216,7 @@ A criação das entidades de grade envolve validações de consistência estrita
 | + dia_semana: str                                                                       |
 | + hora_inicio: str                                                                      |
 +-----------------------------------------------------------------------------------------+
+```
 
 ### 2. Padrão Comportamental: Strategy
 
@@ -255,3 +256,4 @@ O contexto ValidadorConflitos apenas varre uma lista de estratégias ativas. Se 
  +----------------------------------+     +----------------------------------+
  | + validar(grade) -> List[str]    |     | + validar(grade) -> List[str]    |
  +----------------------------------+     +----------------------------------+
+```
