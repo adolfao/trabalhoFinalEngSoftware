@@ -1,0 +1,45 @@
+from abc import ABC, abstractmethod
+from typing import List
+from modelos.grade_horaria import GradeHoraria
+
+class EstrategiaValidacao(ABC):
+    @abstractmethod
+    def validar(self, grade: GradeHoraria) -> List[str]:
+        pass
+
+class ValidaChoqueDocente(EstrategiaValidacao):
+    def validar(self, grade: GradeHoraria) -> List[str]:
+        conflitos = []
+        vistos = set()
+        for alocacao in grade.alocacoes:
+            # Chave única: professor, dia e horário
+            chave = (alocacao["professor"].id_prof, alocacao["dia"], alocacao["horario"])
+            if chave in vistos:
+                conflitos.append(f"Conflito: O professor {alocacao['professor'].nome} está alocado em duas turmas no mesmo horário ({alocacao['dia']} às {alocacao['horario']}).")
+            vistos.add(chave)
+        return conflitos
+
+class ValidaChoqueTurma(EstrategiaValidacao):
+    def validar(self, grade: GradeHoraria) -> List[str]:
+        conflitos = []
+        vistos = set()
+        for alocacao in grade.alocacoes:
+            # Chave única: período da disciplina, dia e horário
+            chave = (alocacao["disciplina"].periodo, alocacao["dia"], alocacao["horario"])
+            if chave in vistos:
+                conflitos.append(f"Conflito: O {alocacao['disciplina'].periodo}º Período tem duas disciplinas no mesmo horário ({alocacao['dia']} às {alocacao['horario']}).")
+            vistos.add(chave)
+        return conflitos
+
+class ValidadorConflitos:
+    def __init__(self):
+        self._estrategias: List[EstrategiaValidacao] = [
+            ValidaChoqueDocente(),
+            ValidaChoqueTurma()
+        ]
+
+    def executar_validacoes(self, grade: GradeHoraria) -> List[str]:
+        todos_conflitos = []
+        for estrategia in self._estrategias:
+            todos_conflitos.extend(estrategia.validar(grade))
+        return todos_conflitos
