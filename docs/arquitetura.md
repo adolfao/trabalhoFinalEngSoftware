@@ -2,14 +2,38 @@
 
 ## Padrões de codificação
 
-O projeto será desenvolvido em Python utilizando convenções baseadas na PEP8, buscando manter organização, legibilidade e padronização do código.
+O projeto será desenvolvido em Python, seguindo convenções baseadas na PEP 8 para manter o código organizado, legível e padronizado.
 
-As principais práticas adotadas pela equipe são:
+As funções, variáveis e arquivos serão nomeados em `snake_case`, utilizando letras minúsculas e separação por underline. Exemplos:
 
-- Utilização de nomes descritivos para variáveis, funções, classes e arquivos;
-- Uso de nomes em português para manter consistência com a proposta do projeto;
-- Utilização de funções e módulos com responsabilidades específicas;
-- Comentários apenas quando necessários para explicar regras de negócio ou trechos importantes do sistema;
+```python
+gerar_grade_horaria()
+verificar_disponibilidade()
+carga_horaria_professor
+modelo_alocacao.py
+```
+
+As classes serão nomeadas em `PascalCase`, com a primeira letra de cada palavra em maiúscula. Exemplos:
+
+```python
+Professor
+Turma
+HorarioAula
+ModeloAlocacao
+```
+
+As constantes serão escritas em letras maiúsculas, também separadas por underline. Exemplos:
+
+```python
+MAXIMO_AULAS_DIA = 7
+HORARIOS_REUNIAO = ["M4", "M5"]
+```
+
+Os nomes utilizados no código serão, preferencialmente, em português e descritivos, evitando abreviações ou nomes genéricos como `aux`, `var1` ou `funcao1`.
+
+O código será dividido em funções e módulos com responsabilidades específicas, como carregamento de dados, criação do modelo, definição das restrições e exportação dos resultados.
+
+A indentação seguirá o padrão de 4 espaços por nível. Os comentários serão utilizados apenas quando necessários para explicar regras de negócio ou trechos importantes do sistema.
 
 ---
 
