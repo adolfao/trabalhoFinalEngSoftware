@@ -1,0 +1,27 @@
+{
+  "professores": [
+    {
+      "id_prof": 1,
+      "nome": "Lucio",
+      "disponibilidade": {
+        "Segunda": [
+          "08:00"
+        ]
+      }
+    }
+  ],
+  "disciplinas": [
+    {
+      "codigo": "ES01",
+      "nome": "Engenharia de Software",
+      "periodo": 4,
+      "carga_horaria": 60
+    },
+    {
+      "codigo": "AL01",
+      "nome": "Algoritmos",
+      "periodo": 4,
+      "carga_horaria": 60
+    }
+  ]
+}

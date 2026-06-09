@@ -1,4 +1,4 @@
-from modelos.disciplina import Disciplina
+from Modelos.disciplina import Disciplina
 
 class FabricaDisciplina:
     @staticmethod

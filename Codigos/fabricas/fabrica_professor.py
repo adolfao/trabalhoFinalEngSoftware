@@ -1,4 +1,4 @@
-from modelos.professor import Professor
+from Modelos.professor import Professor
 
 class FabricaProfessor:
     @staticmethod
