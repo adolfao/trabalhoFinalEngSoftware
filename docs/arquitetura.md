@@ -54,37 +54,35 @@ Essa separação busca facilitar manutenção, reutilização e entendimento do 
 ```txt
 codigo/
 │
-├── main.py                # Ponto de entrada do sistema
+├── main.py
 │
-├── data/                  # Armazenamento persistente
-│   └── entities.json
-│
-├── Modelos/               # Entidades de negócio (Dominio)
-│   ├── __init__.py
+├── modelos/
 │   ├── professor.py
 │   ├── disciplina.py
-│   └── vinculo.py
+│   ├── horario.py
+│   └── grade_horaria.py
 │
-├── Repositorios/          # Gestão de coleções em memória
-│   ├── __init__.py
+├── servicos/
+│   ├── gerador_grade.py
+│   ├── validador_conflitos.py
+│   └── organizador_horarios.py
+│
+├── fabricas/
+│   ├── fabrica_professor.py
+│   ├── fabrica_disciplina.py
+│   └── fabrica_horario.py
+│
+├── repositorios/
 │   ├── repositorio_professores.py
 │   ├── repositorio_disciplinas.py
-│   └── repositorio_vinculos.py
+│   └── repositorio_horarios.py
 │
-├── Servicos/              # Regras de negócio e persistência
-│   ├── __init__.py
-│   ├── interface_usuario.py
-│   ├── persistencia.py    # Serviço de I/O para o JSON
-│   ├── gerador_grade.py
-│   └── validador_conflitos.py
+├── utils/
+│   └── formatadores.py
 │
-├── Fabricas/              # Padrão Factory para instâncias
-│   ├── __init__.py
-│   ├── fabrica_professor.py
-│   └── fabrica_disciplina.py
-│
-└── testes/                # Testes automatizados
-    └── ...
+└── testes/
+    ├── teste_conflitos.py
+    └── teste_gerador.py
 ```
 
 ---
