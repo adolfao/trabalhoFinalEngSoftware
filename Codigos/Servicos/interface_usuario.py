@@ -12,9 +12,11 @@ from Repositorios.repositorio_vinculos import RepositorioVinculos
 from Servicos.gerador_grade import GeradorGrade
 from Servicos.validador_conflitos import ValidadorConflitos
 from Servicos.organizador_horarios import OrganizadorHorarios
+from Servicos.persistencia import Persistencia
 from Modelos.horario import (
     HORARIOS_MANHA, HORARIOS_TARDE, TODOS_HORARIOS,
     DIAS_SEMANA, DESCRICAO_HORARIO, HORARIOS_BLOQUEADOS
+
 )
 
 
@@ -51,8 +53,23 @@ class InterfaceUsuario:
         self.repo_profs = RepositorioProfessores()
         self.repo_discs = RepositorioDisciplinas()
         self.repo_vinculos = RepositorioVinculos()
-        self._proximo_id = 1
+        
+        # 1. Carrega os dados do JSON
+        Persistencia.carregar_dados(self.repo_profs, self.repo_discs)
+        
+        # 2. Calcula o próximo ID baseado no que foi carregado
+        profs = self.repo_profs.listar()
+        if profs:
+            self._proximo_id = max([p.id_prof for p in profs]) + 1
+        else:
+            self._proximo_id = 1
+            
+        print(f"DEBUG: Repositório carregou {len(profs)} professores.")
+        print(f"DEBUG: Próximo ID será {self._proximo_id}.")
+
+        # 3. Inicializa variáveis de controle
         self._grade_atual = None
+        self._grade_publicada = False
 
     def executar(self):
         print("\n" + "=" * 60)
@@ -67,6 +84,10 @@ class InterfaceUsuario:
             "5": self._ver_grade,
             "6": self._verificar_conflitos,
             "7": self._listar_dados,
+            "8": self._remover_professor,
+            "9": self._remover_disciplina,
+            "10": self._visao_aluno,
+            "11": self._publicar_grade,
         }
         while True:
             print("\n--- MENU ---")
@@ -77,6 +98,10 @@ class InterfaceUsuario:
             print("5. Ver grade atual")
             print("6. Verificar conflitos")
             print("7. Ver dados cadastrados")
+            print("8. Remover professor")
+            print("9. Remover disciplina")
+            print("10. Visao do aluno (Grade por periodo)")
+            print("11. Publicar grade horaria")
             print("0. Sair")
             opcao = input("\nEscolha: ").strip()
             if opcao == "0":
@@ -95,10 +120,12 @@ class InterfaceUsuario:
     # Cadastro de professor (baseado no questionario do TCC, pag. 23)
     # ------------------------------------------------------------------
     def _cadastrar_professor(self):
+        print(f"DEBUG: Antes de cadastrar, tenho {len(self.repo_profs.listar())} professores.")
         print("\n--- CADASTRO DE PROFESSOR ---")
         print("(Baseado no questionario de coleta de dados - TCC UTFPR Apucarana)")
 
         nome = input("Nome completo: ").strip()
+        semestre = input("Semestre de validade (ex: 2026/1): ").strip()
 
         # Preferencia de turno (questao do formulario do TCC)
         print("\nPossui preferencia em qual periodo para ministrar aulas?")
@@ -168,10 +195,13 @@ class InterfaceUsuario:
 
         try:
             professor = FabricaProfessor.criar_professor(
-                self._proximo_id, nome, disponibilidade, preferencias
+                self._proximo_id, nome, disponibilidade, preferencias, semestre
             )
             self.repo_profs.adicionar(professor)
+            print(f"DEBUG: Após cadastrar, tenho {len(self.repo_profs.listar())} professores.")
             self._proximo_id += 1
+
+            Persistencia.salvar_dados(self.repo_profs, self.repo_discs)
 
             print(f"\nProfessor '{nome}' cadastrado (ID {professor.id_prof}).")
             print(f"  Dias disponiveis : {', '.join(disponibilidade.keys())}")
@@ -198,6 +228,11 @@ class InterfaceUsuario:
         if not nome:
             print("Nome nao pode ser vazio.")
             return
+        
+        turma = input("Turma (ex: A, B, Unica): ").strip()
+        if not turma:
+            print("Turma nao pode ser vazio.")
+            return
 
         print("\nPeriodo/semestre da disciplina (1 a 10):")
         print("  Periodos impares -> aulas de manha (M1-M6)")
@@ -223,9 +258,10 @@ class InterfaceUsuario:
         carga_horaria = carga_map[opcao_ch]
 
         try:
-            disciplina = FabricaDisciplina.criar_disciplina(codigo, nome, periodo, carga_horaria)
+            disciplina = FabricaDisciplina.criar_disciplina(codigo, nome, periodo, carga_horaria, turma)
             self.repo_discs.adicionar(disciplina)
             slots_sem = carga_horaria // 15
+            Persistencia.salvar_dados(self.repo_profs, self.repo_discs)
             print(f"\nDisciplina '{nome}' cadastrada.")
             print(f"  Codigo  : {codigo} | Periodo: {periodo}o | {carga_horaria}h ({slots_sem} aulas/semana)")
         except ValueError as e:
@@ -359,3 +395,85 @@ class InterfaceUsuario:
 
         bloq = [f"{dia} {h}" for dia, hs in HORARIOS_BLOQUEADOS.items() for h in hs]
         print(f"\nHorarios bloqueados (reunioes): {', '.join(bloq)}")
+
+
+    def _remover_professor(self):
+            print("\n--- REMOVER PROFESSOR ---")
+            profs = self.repo_profs.listar()
+            if not profs:
+                print("Nenhum professor cadastrado.")
+                return
+
+            for i, p in enumerate(profs, 1):
+                print(f"  {i}. [{p.id_prof}] {p.nome}")
+            
+            idx = _ler_indices("Escolha o professor para remover: ", len(profs))
+            if not idx:
+                return
+                
+            prof = profs[idx[0]]
+            self.repo_profs.remover(prof.id_prof)
+            
+            self.repo_vinculos._vinculos = [
+                (p, d) for p, d in self.repo_vinculos.listar() if p.id_prof != prof.id_prof
+            ]
+
+            Persistencia.salvar_dados(self.repo_profs, self.repo_discs)
+
+            print(f"\nProfessor '{prof.nome}' e seus vinculos foram removidos com sucesso.")
+
+    def _remover_disciplina(self):
+        print("\n--- REMOVER DISCIPLINA ---")
+        discs = self.repo_discs.listar()
+        if not discs:
+            print("Nenhuma disciplina cadastrada.")
+            return
+
+        for i, d in enumerate(discs, 1):
+            print(f"  {i}. [{d.codigo}] {d.nome}")
+        
+        idx = _ler_indices("Escolha a disciplina para remover: ", len(discs))
+        if not idx:
+            return
+            
+        disc = discs[idx[0]]
+        self.repo_discs.remover(disc.codigo)
+        
+        # Limpa os vinculos associados a essa disciplina
+        self.repo_vinculos._vinculos = [
+            (p, d) for p, d in self.repo_vinculos.listar() if d.codigo != disc.codigo
+        ]
+
+        Persistencia.salvar_dados(self.repo_profs, self.repo_discs)
+
+        print(f"\nDisciplina '{disc.nome}' e seus vinculos foram removidos com sucesso.")
+
+    def _publicar_grade(self):
+            """Atende ao critério de publicação da HU07."""
+            if not self._grade_atual:
+                print("\nNenhuma grade gerada para publicar.")
+                return
+            self._grade_publicada = True
+            print("\n[Sucesso] Grade horaria PUBLICADA! Agora os alunos podem visualiza-la.")
+
+
+    def _visao_aluno(self):
+            """Atende a HU07: visualização do aluno após publicação."""
+            print("\n--- VISAO DO ALUNO ---")
+            if not self._grade_atual or not getattr(self, '_grade_publicada', False):
+                print("A coordenacao ainda nao publicou nenhuma grade.")
+                return
+            
+            try:
+                periodo = int(input("Digite o seu periodo (1-10): ").strip())
+            except ValueError:
+                return
+                
+            org = OrganizadorHorarios()
+            por_dia = org.por_dia(self._grade_atual)
+            
+            print(f"\n=== GRADE DO {periodo}o PERIODO ===")
+            for dia, alocacoes in por_dia.items():
+                aulas = [a for a in alocacoes if a["disciplina"].periodo == periodo]
+                for a in aulas:
+                    print(f" {dia} {a['horario']} - {a['disciplina'].nome} (Turma {a['disciplina'].turma})")

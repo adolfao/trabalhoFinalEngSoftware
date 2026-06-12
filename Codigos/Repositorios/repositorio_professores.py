@@ -19,5 +19,11 @@ class RepositorioProfessores:
                 return p
         return None
 
+    def remover(self, id_prof: int) -> bool:
+        """Remove o professor pelo ID. Retorna True se removeu, False caso não exista."""
+        tamanho_original = len(self._professores)
+        self._professores = [p for p in self._professores if p.id_prof != id_prof]
+        return len(self._professores) < tamanho_original
+
     def listar(self) -> List[Professor]:
         return list(self._professores)

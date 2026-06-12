@@ -19,5 +19,11 @@ class RepositorioDisciplinas:
                 return d
         return None
 
+    def remover(self, codigo: str) -> bool:
+        """Remove a disciplina pelo código. Retorna True se removeu, False caso não exista."""
+        tamanho_original = len(self._disciplinas)
+        self._disciplinas = [d for d in self._disciplinas if d.codigo != codigo]
+        return len(self._disciplinas) < tamanho_original
+
     def listar(self) -> List[Disciplina]:
         return list(self._disciplinas)

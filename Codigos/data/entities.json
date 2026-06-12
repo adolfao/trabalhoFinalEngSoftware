@@ -2,26 +2,86 @@
   "professores": [
     {
       "id_prof": 1,
-      "nome": "Lucio",
+      "nome": "Luiz",
       "disponibilidade": {
-        "Segunda": [
-          "08:00"
+        "Terca": [
+          "T1",
+          "T2",
+          "T3",
+          "T4",
+          "T5",
+          "T6"
+        ],
+        "Sexta": [
+          "T1",
+          "T2",
+          "T3",
+          "T4",
+          "T5",
+          "T6"
         ]
-      }
+      },
+      "preferencias": [
+        "Sexta"
+      ],
+      "semestre": "2026/1"
+    },
+    {
+      "id_prof": 2,
+      "nome": "Tamara",
+      "disponibilidade": {
+        "Quarta": [
+          "T1",
+          "T2",
+          "T3",
+          "T4",
+          "T5",
+          "T6"
+        ],
+        "Quinta": [
+          "T1",
+          "T2",
+          "T3",
+          "T4",
+          "T5",
+          "T6"
+        ],
+        "Sexta": [
+          "T1",
+          "T2",
+          "T3",
+          "T4",
+          "T5",
+          "T6"
+        ]
+      },
+      "preferencias": [
+        "Sexta"
+      ],
+      "semestre": "2026/1"
     }
   ],
   "disciplinas": [
     {
-      "codigo": "ES01",
+      "codigo": "ENCO6A",
       "nome": "Engenharia de Software",
-      "periodo": 4,
-      "carga_horaria": 60
+      "periodo": 6,
+      "carga_horaria": 60,
+      "turma": "A"
     },
     {
-      "codigo": "AL01",
-      "nome": "Algoritmos",
-      "periodo": 4,
-      "carga_horaria": 60
+      "codigo": "ASDASD",
+      "nome": "asfas",
+      "periodo": 6,
+      "carga_horaria": 60,
+      "turma": "a"
+    },
+    {
+      "codigo": "DASGDG",
+      "nome": "dghdtr",
+      "periodo": 9,
+      "carga_horaria": 90,
+      "turma": "b"
     }
   ]
 }
