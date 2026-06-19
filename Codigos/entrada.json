@@ -1,0 +1,43 @@
+{
+  "professores": [
+    {
+      "id_prof": 1,
+      "nome": "Luiz",
+      "disponibilidade": {
+        "Terca": ["T1", "T2", "T3", "T4", "T5", "T6"],
+        "Sexta": ["T1", "T2", "T3", "T4", "T5", "T6"]
+      },
+      "preferencias": ["Sexta"]
+    },
+    {
+      "id_prof": 2,
+      "nome": "Tamara",
+      "disponibilidade": {
+        "Quarta": ["T1", "T2", "T3", "T4", "T5", "T6"],
+        "Quinta": ["T1", "T2", "T3", "T4", "T5", "T6"],
+        "Sexta": ["T1", "T2", "T3", "T4", "T5", "T6"]
+      },
+      "preferencias": ["Sexta"]
+    },
+    {
+      "id_prof": 3,
+      "nome": "Carlos",
+      "disponibilidade": {
+        "Terca": ["T1", "T2", "T3", "T4", "T5", "T6"],
+        "Quinta": ["T1", "T2", "T3", "T4", "T5", "T6"]
+      },
+      "preferencias": ["Terca"]
+    }
+  ],
+  "disciplinas": [
+    {"codigo": "ENCO6A", "nome": "Engenharia de Software", "periodo": 6, "carga_horaria": 60, "turma": "A"},
+    {"codigo": "BDAD6A", "nome": "Banco de Dados", "periodo": 6, "carga_horaria": 60, "turma": "A"},
+    {"codigo": "REDE8A", "nome": "Redes de Computadores", "periodo": 8, "carga_horaria": 60, "turma": "A"}
+  ],
+  "vinculos": [
+    {"id_prof": 1, "codigo": "ENCO6A"},
+    {"id_prof": 2, "codigo": "BDAD6A"},
+    {"id_prof": 3, "codigo": "REDE8A"}
+  ],
+  "salas": ["Sala A", "Sala B"]
+}

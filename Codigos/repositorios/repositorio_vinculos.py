@@ -1,6 +1,6 @@
 from typing import List, Tuple
-from Modelos.professor import Professor
-from Modelos.disciplina import Disciplina
+from modelos.professor import Professor
+from modelos.disciplina import Disciplina
 
 
 class RepositorioVinculos:

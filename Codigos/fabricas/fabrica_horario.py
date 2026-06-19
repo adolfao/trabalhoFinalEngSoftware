@@ -1,4 +1,4 @@
-from Modelos.horario import TODOS_HORARIOS, DIAS_SEMANA
+from modelos.horario import TODOS_HORARIOS, DIAS_SEMANA
 
 
 class FabricaHorario:

@@ -1,0 +1,25 @@
+Colocar pastas com letra minuscula
+
+questionario: 
+-nome
+-materias que ministra
+-preferencia?
+
+Conjuntos
+• 𝑃: conjunto de professores;
+• 𝑇: conjunto de semestres;
+• 𝐷: conjunto de dias da semana;
+• 𝐻: conjunto de horários possíveis em um dia.
+O conjunto 𝐷 é representado por 𝐷 = {1, 2, 3, 4, 5}, com Dia 1 sendo Segunda-feira,
+Dia 2 sendo Terça-feira, Dia 3 sendo Quarta-feira, Dia 4 sendo Quinta-feira, e Dia 5 sendo
+Sexta-feira.
+
+O conjunto 𝐻 é composto pelos horários 𝐻 =
+{𝑀1, 𝑀2, 𝑀3, 𝑀4, 𝑀5, 𝑀6, 𝑇1, 𝑇2, 𝑇3, 𝑇4, 𝑇5, 𝑇6}, com M1=[07h30, 08h20], M2=[08h20,
+09h10], M3=[09h10, 10h00], M4=[10h20, 11h10], M5=[11h10, 12h00], M6=[12h00, 12h50],
+T1=[13h00, 13h50], T2=[13h50, 14h40], T3=[14h40, 15h30], T4=[15h50, 16h40], T5=[16h40,
+17h30] e T6=[17h30, 18h20]
+
+nao leva em conta a questão de salas
+
+a entrada é um arquivo e nao interface

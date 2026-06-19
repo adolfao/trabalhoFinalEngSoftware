@@ -1,5 +1,5 @@
 from typing import List
-from Modelos.disciplina import Disciplina
+from modelos.disciplina import Disciplina
 
 
 class RepositorioDisciplinas:

@@ -52,9 +52,11 @@ Essa separação busca facilitar manutenção, reutilização e entendimento do 
 ### Exemplo visual
 
 ```txt
-codigo/
+Codigos/
 │
-├── main.py
+├── main.py                       # le a entrada (arquivo) e produz o relatorio
+├── entrada.json                  # exemplo de entrada estruturada
+├── requirements.txt              # dependencias (PuLP)
 │
 ├── modelos/
 │   ├── professor.py
@@ -63,7 +65,10 @@ codigo/
 │   └── grade_horaria.py
 │
 ├── servicos/
-│   ├── gerador_grade.py
+│   ├── leitor_entrada.py         # le o arquivo JSON de entrada
+│   ├── gerador_grade_base.py     # interface Strategy dos geradores
+│   ├── gerador_grade.py          # estrategia: heuristica gulosa
+│   ├── gerador_grade_otimizado.py# estrategia: otimizacao MILP (PuLP)
 │   ├── validador_conflitos.py
 │   └── organizador_horarios.py
 │
@@ -75,14 +80,10 @@ codigo/
 ├── repositorios/
 │   ├── repositorio_professores.py
 │   ├── repositorio_disciplinas.py
-│   └── repositorio_horarios.py
+│   └── repositorio_vinculos.py
 │
-├── utils/
-│   └── formatadores.py
-│
-└── testes/
-    ├── teste_conflitos.py
-    └── teste_gerador.py
+└── tests/
+    └── ...                       # testes automatizados (unittest)
 ```
 
 ---
@@ -100,14 +101,15 @@ Para auxiliar na organização e qualidade do projeto, a equipe definiu as segui
 ### Diagrama visual
 
 ```txt
-Usuário
+Arquivo de entrada (entrada.json)
    ↓
 
 main.py
    ↓
 
 servicos/
-├── gerador_grade.py
+├── leitor_entrada.py
+├── gerador_grade.py / gerador_grade_otimizado.py
 ├── validador_conflitos.py
 └── organizador_horarios.py
 
@@ -124,24 +126,24 @@ modelos/
 repositorios/
 ├── repositorio_professores.py
 ├── repositorio_disciplinas.py
-└── repositorio_horarios.py
+└── repositorio_vinculos.py
 ```
 
 ### Explicação de responsabilidades
 
 main.py
-Controla o fluxo do sistema.
+Controla o fluxo: le o arquivo de entrada, aciona o gerador escolhido e imprime o relatorio da grade.
 
 servicos/
-Onde fica a lógica principal.
+Onde fica a lógica principal (leitura da entrada, geração da grade, validação de conflitos e organização da saída).
 
 modelos/
 Representa os dados.
 
 repositorios/
-Controla armazenamento e acesso aos dados.
+Controla armazenamento e acesso aos dados (em memória).
 
-Todos utilizam a fabrica/ e o utils/
+Os serviços e repositórios utilizam as entidades criadas pelas fabricas/.
 
 ## Trade-offs adotados
 
@@ -224,6 +226,8 @@ O maior desafio do sistema é a identificação de conflitos (HU05). Em vez de c
 
 O contexto ValidadorConflitos apenas varre uma lista de estratégias ativas. Se amanhã a coordenação exigir uma nova regra (ex: "limite de 4 horas de aula seguidas para o mesmo período"), basta criar uma nova classe que implemente a interface, sem tocar no código que já funciona.
 
+Atualmente há três estratégias de validação: `ValidaChoqueDocente` (mesmo professor em dois lugares ao mesmo tempo), `ValidaChoquePeriodo` (duas disciplinas do mesmo período/turma no mesmo horário) e `ValidaChoqueSala` (uma sala — local físico — com duas aulas no mesmo horário). Cada alocação da grade guarda também a `sala` em que ocorre.
+
 ```txt
 +------------------------------------------------------------------+
  |                       ValidadorConflitos                         |
@@ -250,9 +254,41 @@ O contexto ValidadorConflitos apenas varre uma lista de estratégias ativas. Se 
  |       ValidaChoqueDocente        |     |       ValidaChoquePeriodo        |
  +----------------------------------+     +----------------------------------+
  | # Verifica se o mesmo professor  |     | # Impede que duas disciplinas do |
- | # está em duas salas no mesmo    |     | # mesmo período/turma tenham     |
+ | # está em duas turmas no mesmo   |     | # mesmo período/turma tenham     |
  | # dia e horário.                 |     | # aulas sobrepostas.             |
  +----------------------------------+     +----------------------------------+
  | + validar(grade) -> List[str]    |     | + validar(grade) -> List[str]    |
  +----------------------------------+     +----------------------------------+
 ```
+
+#### Segundo uso do Strategy: geradores de grade
+
+A geração da grade também usa Strategy. A interface `GeradorGradeStrategy`
+(`servicos/gerador_grade_base.py`) define o método `gerar(vinculos)`, e há duas
+estratégias concretas e intercambiáveis:
+
+- `GeradorGrade` — heurística gulosa (rápida, encontra *uma* grade válida);
+- `GeradorGradeOtimizado` — otimização linear inteira (MILP) com o solver CBC via
+  PuLP, reproduzindo o modelo matemático do TCC de referência (maximiza alocação
+  e preferências de dia respeitando todas as restrições).
+
+O `main.py` escolhe a estratégia conforme o método informado, sem conhecer os
+detalhes de cada algoritmo.
+
+```txt
+        <<interface / ABC>> GeradorGradeStrategy
+                  + gerar(vinculos) -> GradeHoraria
+                                ▲
+              +-----------------+-----------------+
+              |                                   |
+        GeradorGrade                     GeradorGradeOtimizado
+        (heurística gulosa)              (otimização MILP / PuLP)
+```
+
+#### Trade-off: heurística vs. otimização
+
+A heurística não tem dependências externas e é instantânea, mas não garante a
+melhor grade. A otimização (PuLP) encontra a solução ótima da função objetivo,
+ao custo de uma dependência externa (`pulp`). Mantivemos as duas como estratégias
+para permitir a comparação e demonstrar o padrão Strategy; a otimização é o
+método padrão e a heurística é o fallback quando o PuLP não está instalado.

@@ -1,6 +1,6 @@
 import unittest
-from Fabricas.fabrica_disciplina import FabricaDisciplina
-from Fabricas.fabrica_professor import FabricaProfessor
+from fabricas.fabrica_disciplina import FabricaDisciplina
+from fabricas.fabrica_professor import FabricaProfessor
 
 class TestFabricaDisciplina(unittest.TestCase):
 

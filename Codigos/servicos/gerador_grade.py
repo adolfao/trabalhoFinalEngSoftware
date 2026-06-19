@@ -1,11 +1,12 @@
 from typing import List, Tuple
-from Modelos.professor import Professor
-from Modelos.disciplina import Disciplina
-from Modelos.grade_horaria import GradeHoraria
-from Modelos.horario import (
+from modelos.professor import Professor
+from modelos.disciplina import Disciplina
+from modelos.grade_horaria import GradeHoraria
+from modelos.horario import (
     HORARIOS_MANHA, HORARIOS_TARDE, DIAS_SEMANA,
     MAXIMO_AULAS_DIA, HORARIOS_BLOQUEADOS
 )
+from servicos.gerador_grade_base import GeradorGradeStrategy, atribuir_sala
 
 
 def _max_slots_por_dia(slots_totais: int) -> int:
@@ -27,8 +28,9 @@ def _slot_bloqueado(dia: str, horario: str) -> bool:
     return horario in HORARIOS_BLOQUEADOS.get(dia, [])
 
 
-class GeradorGrade:
-    def gerar(self, vinculos: List[Tuple[Professor, Disciplina]]) -> GradeHoraria:
+class GeradorGrade(GeradorGradeStrategy):
+    def gerar(self, vinculos: List[Tuple[Professor, Disciplina]],
+              salas: list) -> GradeHoraria:
         """
         Gera grade horaria respeitando as restricoes do curso de Engenharia de Computacao
         da UTFPR Campus Apucarana (TCC - Camila Beatriz da Silva, 2024):
@@ -41,10 +43,12 @@ class GeradorGrade:
         - Terca M4-M5 bloqueados (reuniao dos professores)
         - Disciplinas com 4+ slots semanais divididas em dias diferentes  [regra do curso]
         - Dias preferidos do professor alocados primeiro (PV_pd = 10)
+        - Cada aula ocupa uma sala livre; uma sala nao recebe 2 aulas no mesmo slot
         """
         grade = GradeHoraria()
         ocupado_prof = set()       # (id_prof, dia, horario)
         ocupado_periodo = set()    # (periodo, dia, horario)
+        ocupado_sala = set()       # (sala, dia, horario)
         aulas_por_prof_dia = {}    # (id_prof, dia) -> int
         slots_disc_dia = {}        # (codigo_disc, dia) -> int  -- para forcar divisao
 
@@ -81,10 +85,14 @@ class GeradorGrade:
                         continue
                     if slots_disc_dia.get((disciplina.codigo, dia), 0) >= limite_por_dia:
                         continue
+                    sala = atribuir_sala(ocupado_sala, dia, horario, salas)
+                    if sala is None:
+                        continue  # todas as salas ocupadas nesse horario
 
-                    grade.adicionar_aula(professor, disciplina, dia, horario)
+                    grade.adicionar_aula(professor, disciplina, dia, horario, sala)
                     ocupado_prof.add((professor.id_prof, dia, horario))
                     ocupado_periodo.add((disciplina.periodo, dia, horario))
+                    ocupado_sala.add((sala, dia, horario))
                     aulas_por_prof_dia[(professor.id_prof, dia)] = (
                         aulas_por_prof_dia.get((professor.id_prof, dia), 0) + 1
                     )

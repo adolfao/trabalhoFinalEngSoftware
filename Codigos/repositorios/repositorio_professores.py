@@ -1,5 +1,5 @@
 from typing import List
-from Modelos.professor import Professor
+from modelos.professor import Professor
 
 
 class RepositorioProfessores:

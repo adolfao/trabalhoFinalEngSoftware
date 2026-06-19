@@ -1,0 +1,3 @@
+# Solver de otimizacao linear inteira (MILP) usado pelo gerador de grade
+# otimizado (Servicos/gerador_grade_otimizado.py). Ja inclui o solver CBC.
+pulp>=2.7

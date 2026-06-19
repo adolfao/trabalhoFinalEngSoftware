@@ -1,5 +1,5 @@
-from Modelos.grade_horaria import GradeHoraria
-from Modelos.horario import TODOS_HORARIOS, DESCRICAO_HORARIO, DIAS_SEMANA
+from modelos.grade_horaria import GradeHoraria
+from modelos.horario import TODOS_HORARIOS, DESCRICAO_HORARIO, DIAS_SEMANA
 
 
 class OrganizadorHorarios:
@@ -35,8 +35,10 @@ class OrganizadorHorarios:
             for a in alocacoes:
                 horario = a["horario"]
                 inicio = DESCRICAO_HORARIO.get(horario, horario)
+                sala = a.get("sala")
+                sala_txt = f" - {sala}" if sala else ""
                 print(
                     f"  {horario} ({inicio}) - {a['disciplina'].nome} "
                     f"[{a['disciplina'].periodo}o periodo] "
-                    f"- Prof. {a['professor'].nome}"
+                    f"- Prof. {a['professor'].nome}{sala_txt}"
                 )
