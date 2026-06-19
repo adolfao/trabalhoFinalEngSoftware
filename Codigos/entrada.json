@@ -4,8 +4,8 @@
       "id_prof": 1,
       "nome": "Luiz",
       "disponibilidade": {
-        "Terca": ["T1", "T2", "T3", "T4", "T5", "T6"],
-        "Sexta": ["T1", "T2", "T3", "T4", "T5", "T6"]
+        "Terca": ["T1", "T2", "T3", "T4"],
+        "Sexta": ["T1", "T2", "T3", "T4"]
       },
       "preferencias": ["Sexta"]
     },
@@ -13,31 +13,43 @@
       "id_prof": 2,
       "nome": "Tamara",
       "disponibilidade": {
-        "Quarta": ["T1", "T2", "T3", "T4", "T5", "T6"],
-        "Quinta": ["T1", "T2", "T3", "T4", "T5", "T6"],
-        "Sexta": ["T1", "T2", "T3", "T4", "T5", "T6"]
+        "Quarta": ["T1", "T2"],
+        "Sexta": ["T3", "T4"]
       },
-      "preferencias": ["Sexta"]
+      "preferencias": ["Quarta"]
     },
     {
       "id_prof": 3,
+      "nome": "Barreto",
+      "disponibilidade": {
+        "Terca": ["T1", "T2"],
+        "Quinta": ["T1", "T2"]
+      },
+      "preferencias": ["Quinta"]
+    },
+    {
+      "id_prof": 4,
       "nome": "Carlos",
       "disponibilidade": {
-        "Terca": ["T1", "T2", "T3", "T4", "T5", "T6"],
-        "Quinta": ["T1", "T2", "T3", "T4", "T5", "T6"]
+        "Segunda": ["T3", "T4"],
+        "Terca": ["T3", "T4"]
       },
-      "preferencias": ["Terca"]
+      "preferencias": ["Segunda"]
     }
   ],
   "disciplinas": [
     {"codigo": "ENCO6A", "nome": "Engenharia de Software", "periodo": 6, "carga_horaria": 60, "turma": "A"},
     {"codigo": "BDAD6A", "nome": "Banco de Dados", "periodo": 6, "carga_horaria": 60, "turma": "A"},
-    {"codigo": "REDE8A", "nome": "Redes de Computadores", "periodo": 8, "carga_horaria": 60, "turma": "A"}
+    {"codigo": "REDE8A", "nome": "Redes de Computadores", "periodo": 8, "carga_horaria": 60, "turma": "A"},
+    {"codigo": "COMP6A", "nome": "Compiladores", "periodo": 6, "carga_horaria": 60, "turma": "A"},
+    {"codigo": "SIST8A", "nome": "Sistemas Distribuídos", "periodo": 8, "carga_horaria": 60, "turma": "A"}
   ],
   "vinculos": [
     {"id_prof": 1, "codigo": "ENCO6A"},
     {"id_prof": 2, "codigo": "BDAD6A"},
-    {"id_prof": 3, "codigo": "REDE8A"}
+    {"id_prof": 3, "codigo": "REDE8A"},
+    {"id_prof": 1, "codigo": "COMP6A"},
+    {"id_prof": 4, "codigo": "SIST8A"}
   ],
-  "salas": ["Sala A", "Sala B"]
+  "salas": ["Sala A", "Sala B", "Sala C"]
 }
