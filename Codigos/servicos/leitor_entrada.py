@@ -1,6 +1,6 @@
 """Leitura da entrada estruturada do sistema.
 
-O sistema recebe como entrada um arquivo JSON,
+O sistema recebe como entrada um arquivo JSON (e nao uma interface interativa),
 contendo professores, disciplinas e os vinculos entre eles. Cada entidade e
 criada pelas Fabricas (Factory Method), que validam os dados antes de aceitar.
 
