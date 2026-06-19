@@ -6,7 +6,7 @@ DIAS_SEMANA = ["Segunda", "Terca", "Quarta", "Quinta", "Sexta"]
 
 MAXIMO_AULAS_DIA = 7
 
-# Terca-feira das 10h as 12h reservada para reunioes dos professores (TCC pag. 21)
+# Terca-feira das 10h as 12h reservada para reunioes dos professores
 HORARIOS_BLOQUEADOS = {"Terca": ["M4", "M5"]}
 
 DESCRICAO_HORARIO = {
