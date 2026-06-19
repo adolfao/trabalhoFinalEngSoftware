@@ -54,9 +54,9 @@ Essa separação busca facilitar manutenção, reutilização e entendimento do 
 ```txt
 Codigos/
 │
-├── main.py                       # le a entrada (arquivo) e produz o relatorio
-├── entrada.json                  # exemplo de entrada estruturada
-├── requirements.txt              # dependencias (PuLP)
+├── main.py                     # Ponto de entrada (leitura e relatório)
+├── entrada.json                # Entrada estruturada
+├── requirements.txt            # Dependências (PuLP)
 │
 ├── modelos/
 │   ├── professor.py
@@ -65,10 +65,9 @@ Codigos/
 │   └── grade_horaria.py
 │
 ├── servicos/
-│   ├── leitor_entrada.py         # le o arquivo JSON de entrada
-│   ├── gerador_grade_base.py     # interface Strategy dos geradores
-│   ├── gerador_grade.py          # estrategia: heuristica gulosa
-│   ├── gerador_grade_otimizado.py# estrategia: otimizacao MILP (PuLP)
+│   ├── leitor_entrada.py       # Leitura JSON
+│   ├── gerador_grade.py        # Heurística gulosa
+│   ├── gerador_grade_otimizado.py # MILP (PuLP)
 │   ├── validador_conflitos.py
 │   └── organizador_horarios.py
 │
@@ -82,10 +81,10 @@ Codigos/
 │   ├── repositorio_disciplinas.py
 │   └── repositorio_vinculos.py
 │
-└── tests/
-    └── ...                       # testes automatizados (unittest)
-```
-
+└── testes/                     # Testes automatizados (pytest)
+    ├── test_leitor.py
+    ├── test_fabricas.py
+    └── test_repositorios.py
 ---
 
 ## Gestão e qualidade
@@ -292,3 +291,42 @@ melhor grade. A otimização (PuLP) encontra a solução ótima da função obje
 ao custo de uma dependência externa (`pulp`). Mantivemos as duas como estratégias
 para permitir a comparação e demonstrar o padrão Strategy; a otimização é o
 método padrão e a heurística é o fallback quando o PuLP não está instalado.
+
+
+#### Estratégia de Qualidade e Testes
+
+Para garantir a confiabilidade do sistema, adotamos uma estratégia baseada na Pirâmide de Testes.
+
+1. Resumo da Execução
+A bateria de testes foi implementada via pytest e valida os métodos críticos de Entrada, Domínio e Estado.
+
+- Total de casos de teste: 7
+- Status atual: 100% PASSED.
+
+2. Mapeamento de Métodos Testados
+
+================================================================================
+*MAPEAMENTO DE MÉTODOS TESTADOS*
+================================================================================
+
+*Classe / Módulo*          | *Método(s) Testado(s)*    | *Cenários (Sucesso/Falha/Borda)*
+--------------------------------------------------------------------------------
+LeitorEntrada            | ler()                  | Validação de JSON, vínculos e default.
+FabricaDisciplina        | criar_disciplina()     | Regras de negócio (carga horária).
+RepositorioProfessores   | adicionar() / remover()| Gestão de estado, ID e inexistentes.
+--------------------------------------------------------------------------------
+
+O *LeitorEntrada* lida com o mundo externo, que é imprevisível. As *Fábricas* lidam com as regras de negócio, que não podem ser violadas.
+E os *Repositórios* lidam com a integridade dos dados em memória
+
+*Validação da Entrada (LeitorEntrada.ler):* Este método atua como o "porteiro" do seu software. Se ele falhar em interpretar o JSON ou permitir que dados inconsistentes entrem, todo o restante do sistema (geração de grade, validação de conflitos) operará sobre uma base corrompida. Testar o fluxo de sucesso, falha e borda aqui garante que o sistema seja resiliente a arquivos mal formatados ou incompletos.
+
+*Validação de Regras de Negócio (FabricaDisciplina.criar_disciplina):* As fábricas funcionam como a "camada de blindagem" das regras de negócio. Ao testar se a fábrica rejeita cargas horárias fora do padrão (ex: 50h), estamos provando que o sistema é capaz de impor restrições acadêmicas automaticamente, sem depender de validações externas ou manuais.
+
+*Integridade do Estado (RepositorioProfessores.adicionar/remover):* O repositório é onde a "memória" do seu sistema reside enquanto ele está aberto. Testar o comportamento de adição e remoção garante que, durante a execução, o software não sofra com bugs de memória, como IDs duplicados ou referências perdidas, o que é essencial para manter a grade coerente durante toda a sessão de uso.
+
+3. Análise Crítica: Estratégia vs. Lacunas
+
+*- Adequação:* A abordagem de testes unitários isola falhas e facilita refatorações.
+
+*- Lacunas:* Módulos de alto nível (GeradorGrade e ValidadorConflitos) possuem cobertura limitada devido à complexidade algorítmica, sendo alvo de testes de integração em iterações futuras.
